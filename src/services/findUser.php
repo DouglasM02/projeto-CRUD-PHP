@@ -11,7 +11,7 @@
             return $data ?? false;
         }
         catch(PDOException $error) {
-            return $error->getMessage();
+            die( $error->getMessage());
         }
     }
 
