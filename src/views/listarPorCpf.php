@@ -4,23 +4,29 @@ include_once "../includes/header.php";
 include_once "../includes/voltar.php";
 include_once "../includes/footer.php";
 
-require_once "../services/filters.php";
+require_once "../controllers/userController.php";
 
-$cpf = $_POST['cpf'];
+$cpf = $_POST['cpf'] ?? false;
 
-$user = filterByCpf($cpf);
+$user = new UserController();
 $message = '';
+$value = null;
 
-if($user){
+if($cpf) {
+  $value = $user->filterByCpf($cpf);
+}
+
+
+if($value){
 $message .= "
         <tr>
-            <th scope='row'>".$user['id']."</th>
-            <td>".$user['nome']."</td>
-            <td>".$user['cpf']."</td>
-            <td>".$user['data_de_nascimento']."</td>
+            <th scope='row'>".$value['id']."</th>
+            <td>".$value['nome']."</td>
+            <td>".$value['cpf']."</td>
+            <td>".$value['data_de_nascimento']."</td>
             <td>
-                <a href='alterar.php?alterar=".$user['id']."' class='btn btn-warning'>Alterar</a>
-                <a href='deletar.php?deletar=".$user['id']."' class='btn btn-danger'>Excluir</a>
+                <a href='alterar.php?alterar=".$value['id']."' class='btn btn-warning'>Alterar</a>
+                <a href='deletar.php?deletar=".$value['id']."' class='btn btn-danger'>Excluir</a>
             </td>
         </tr>
         ";

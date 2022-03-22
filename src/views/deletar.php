@@ -1,17 +1,22 @@
 <?php
 
 include_once "../includes/header.php";
-//include_once "../includes/voltar.php";
 include_once "../includes/footer.php";
 
-require_once "../services/delete.php";
+require_once "../controllers/userController.php";
 
 $id = $_GET['deletar'] ?? false;
+$user = new UserController();
 $message = '';
 
 if($id) {
-    $dado = dbDelete($id);
-    $message = "<div class='alert alert-success mt-3'>".$dado."</div>";
+    $value = $user->delete($id);
+    if($value) {
+        $message = "<div class='alert alert-success mt-3'>".$value."</div>";
+    }
+    else {
+        $message = "<div class'alert alert-danger'>Erro ao deletar</div>";
+    }
 }
 else {
     $message = "<div class='alert alert-warning mt-3'>Erro ao deletar</div>";

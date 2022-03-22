@@ -1,41 +1,37 @@
 <?php
 
 include_once "../includes/header.php";
-//include_once "../includes/voltar.php";
 include_once "../includes/footer.php";
 
-require_once "../services/filters.php";
-require_once "../services/findUser.php";
-require_once "../services/formValidation.php";
-require_once "../services/update.php";
 require_once "../assets/returnMessage.php";
+require_once "../controllers/userController.php";
 
 $id = $_GET['alterar'] ?? false;
-$datas = '';
+$form = '';
 $messageNome = '';
 $messageCpf = '';
 $messageData = '';
 $nomeRetorno = null;
 $cpfRetorno = null;
 $dataRetorno = null;
-$user = dbFindOne($id);
+$user = new UserController();
 
-
+$userInformation = $user->findOne($id);
 
 $nome = $_POST['nome'] ?? false;
 $cpf = $_POST['cpf'] ?? false;
 $data = $_POST['data'] ?? false;
 
-$fieldsOk = fieldsVerify($nome, $cpf, $data);
+$fieldsOk = $user->fieldsVerify($nome, $cpf, $data);
 
 if($fieldsOk) {
-    $cpfDontExists = !filterByCpf($cpf);
+    $cpfDontExists = !$user->cpfValidation($cpf);
 
-    $nomeRetorno = dbUpdate($id,"nome",$nome);
-    $dataRetorno = dbUpdate($id,"data_de_nascimento",$data);
+    $nomeRetorno = $user->updateOne($id,"nome",$nome);
+    $dataRetorno = $user->updateOne($id,"data_de_nascimento",$data);
 
     if($cpfDontExists) {
-        $cpfRetorno = dbUpdate($id,"cpf",$cpf);
+        $cpfRetorno = $user->updateOne($id,"cpf",$cpf);
         $messageCpf = returnMessage($cpfRetorno);
     }
     else {
@@ -53,21 +49,21 @@ else {
 }
 
 
-if($id && $user) {
-    $datas = "
-        <form action='./alterar.php?alterar=".$user['id']."' method='post'>
+if($id && $userInformation) {
+    $form = "
+        <form action='./alterar.php?alterar=".$userInformation['id']."' method='post'>
             <label for='name' class='form-label'>Nome:</label>
-            <input id='name' name='nome' type='text' class='form-control mb-2' placeholder='Digite um nome' value='".$user['nome']."'/>
+            <input id='name' name='nome' type='text' class='form-control mb-2' placeholder='Digite um nome' value='".$userInformation['nome']."'/>
             <label for='cpf' class='form-label'>CPF:</label>
-            <input id='cpf' name='cpf' type='text' class='form-control mb-2' placeholder='Digite um CPF' maxlength='11' value='".$user['cpf']."'/>
+            <input id='cpf' name='cpf' type='text' class='form-control mb-2' placeholder='Digite um CPF' maxlength='11' value='".$userInformation['cpf']."'/>
             <label for='data' class='form-label'>Data de nascimento:</label>
-            <input id='data' name='data' type='date' class='form-control mb-3' value='".$user['data_de_nascimento']."'/>
+            <input id='data' name='data' type='date' class='form-control mb-3' value='".$userInformation['data_de_nascimento']."'/>
             <button type='submit' class='btn btn-warning'>Alterar</button>
         </form>
     ";
 }
 else {
-    $datas = "<div class='alert alert-warning'>Erro inesperado</div>";
+    $form = "<div class='alert alert-warning'>Erro inesperado</div>";
 }
 
 
@@ -80,5 +76,5 @@ else {
     <?=$messageNome ?>
     <?=$messageCpf ?>
     <?=$messageData ?>
-    <?= $datas ?>
+    <?= $form ?>
 </div>

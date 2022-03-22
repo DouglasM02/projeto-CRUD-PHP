@@ -4,14 +4,19 @@ include_once "../includes/header.php";
 include_once "../includes/voltar.php";
 include_once "../includes/footer.php";
 
-require_once "../services/filters.php";
+require_once "../controllers/userController.php";
 
-$nome = $_POST['nome'];
-$users = filterByName($nome);
+$nome = $_POST['nome'] ?? false;
+$users = new UserController();
+$values = null;
+if($nome) {
+  $values = $users->filterByName($nome);
+}
+
 $message = '';
-if($users) {
+if($values) {
 
-    foreach($users as $key => $user) {
+    foreach($values as $key => $user) {
             $message .= "
             <tr>
                 <th scope='row'>".$user['id']."</th>

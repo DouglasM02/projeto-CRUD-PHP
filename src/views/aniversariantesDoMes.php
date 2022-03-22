@@ -3,16 +3,18 @@
 include_once "../includes/header.php";
 include_once "../includes/voltar.php";
 include_once "../includes/footer.php";
-include_once "../services/filters.php";
 
-date_default_timezone_set('America/Sao_Paulo');
-$month = date('m');
-$users = filterByBirthMonth($month);
+require_once "../controllers/userController.php";
+
+$users = new UserController();
+
+$values = $users->filterByBirthMonth();
+
 $message = '';
 
-if($users) {
+if($values) {
 
-  foreach($users as $key => $user) {
+  foreach($values as $key => $user) {
       $date = date_create($user['mes_de_aniversario']);
       $dataAniversario = date_format($date,"d/m");
 

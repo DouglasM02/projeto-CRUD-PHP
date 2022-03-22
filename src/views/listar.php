@@ -4,14 +4,15 @@ include_once "../includes/header.php";
 include_once "../includes/voltar.php";
 include_once "../includes/footer.php";
 
-require_once "../services/listAll.php";
-
-$users = dbListAll();
+require_once "../controllers/userController.php";
+$users = new UserController();
 $message = '';
 
-if($users) {
+$values = $users->findAll();
 
-  foreach($users as $key => $user) {
+if($values) {
+
+  foreach($values as $key => $user) {
           $message .= "
           <tr>
               <th scope='row'>".$user['id']."</th>

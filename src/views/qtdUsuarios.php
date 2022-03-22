@@ -3,9 +3,12 @@
 include_once "../includes/header.php";
 include_once "../includes/voltar.php";
 include_once "../includes/footer.php";
-include_once "../services/countRows.php";
 
-$qtd = countRows();
+require_once "../controllers/userController.php";
+
+$user = new UserController();
+
+$qtd = $user->countRows();
 $message = '';
 
 if($qtd) {

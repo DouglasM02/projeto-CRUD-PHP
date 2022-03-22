@@ -4,22 +4,21 @@ include_once "../includes/header.php";
 include_once "../includes/voltar.php";
 include_once "../includes/footer.php";
 
-require "../services/formValidation.php";
-require "../services/filters.php";
-require "../services/insert.php";
+require_once "../controllers/userController.php";
 
 $nome = $_POST['nome'];
 $cpf = $_POST['cpf'];
 $data = $_POST['data'];
+$user = new UserController();
 $message = null;
 
-$fieldsOk = fieldsVerify($nome, $cpf, $data);
-$cpfOk = cpfValidation($cpf);
-$cpfDontExists = !filterByCpf($cpf);
+$fieldsOk = $user->fieldsVerify($nome, $cpf, $data);
+$cpfOk = $user->cpfValidation($cpf);
+$cpfDontExists = !$user->filterByCpf($cpf);
 
 if($fieldsOk && $cpfOk) {
     if($cpfDontExists) {
-        $dbMessage = dbInsert($nome, $cpf, $data);
+        $dbMessage = $user->insert($nome, $cpf, $data);
         $message = "<p class='alert alert-success'>$dbMessage</p>";
     }
     else {
